@@ -85,7 +85,11 @@ class Middleware implements \ArrayAccess, \Iterator, PsrContainerInterface, PsrM
 		unset($this->children[$offset]);
 	}
 
-	public function process(PsrServerRequestInterface $request, PsrRequestHandlerInterface $handler, ?App $app = null): PsrResponseInterface {
+	public function process(
+		PsrServerRequestInterface $request,
+		PsrRequestHandlerInterface $handler,
+		?App $app = null,
+	): PsrResponseInterface {
 		if (!$this->valid()) {
 			return new Response(404);
 		}

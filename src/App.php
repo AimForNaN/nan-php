@@ -9,7 +9,11 @@ use NaN\Http\{
     Request,
     Response,
 };
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\{
+	ContainerExceptionInterface,
+	ContainerInterface as PsrContainerInterface,
+	NotFoundExceptionInterface,
+};
 use Psr\Http\Message\{
 	ResponseInterface as PsrResponseInterface,
 	ServerRequestInterface as PsrServerRequestInterface,
@@ -50,6 +54,10 @@ class App implements \ArrayAccess, PsrContainerInterface, PsrRequestHandlerInter
 		return $this->services->has($offset);
 	}
 
+	/**
+	 * @throws ContainerExceptionInterface
+	 * @throws NotFoundExceptionInterface
+	 */
 	public function offsetGet(mixed $offset): mixed {
 		return $this->services->get($offset);
 	}
@@ -72,7 +80,7 @@ class App implements \ArrayAccess, PsrContainerInterface, PsrRequestHandlerInter
 	 * Exceptions and errors should be handled on a global level
 	 *  (e.g. register_shutdown_function, set_error_handler, set_exception_handler, etc).
 	 */
-	public function run() {
+	public function run(): void {
 		$req = Request::fromGlobals();
 		$rsp = $this->handle($req);
 		Response::send($rsp);

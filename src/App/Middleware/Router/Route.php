@@ -59,6 +59,11 @@ class Route implements \ArrayAccess, PsrRequestHandlerInterface {
 		}
 
 		foreach ($this->children as $path => $child) {
+			// Skip what's already been tested for!
+			if ($path === $part) {
+				continue;
+			}
+
 			$pattern = new RoutePattern($path);
 			$pattern->compile();
 
@@ -106,7 +111,7 @@ class Route implements \ArrayAccess, PsrRequestHandlerInterface {
 
 			if ($allowed_methods[$method] ?? false) {
 				return function () use ($handler, $method, $values): PsrResponseInterface {
-					/** @var \NaN\DI\Container $this */
+					/** @var Container $this */
 					$method = \strtolower($method);
 					$callable = \Closure::fromCallable([$handler, $method]);
 					$arguments = Arguments::fromCallable($callable, $values);
@@ -120,7 +125,7 @@ class Route implements \ArrayAccess, PsrRequestHandlerInterface {
 		}
 
 		return function () use ($handler, $values): PsrResponseInterface {
-			/** @var \NaN\DI\Container $this */
+			/** @var Container $this */
 			$arguments = Arguments::fromCallable($handler, $values);
 			return \call_user_func($handler, ...$arguments->resolve($this));
 		};

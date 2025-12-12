@@ -8,30 +8,24 @@ namespace NaN;
 final class Env {
 	static protected array $aliases = [];
 	static protected array $env = [];
-	static protected bool $loaded = false;
 
-	/**
-	 * Load .env file.
-	 *
-	 * @param string $dir Directory of .env file.
-	 */
 	private function __construct() {}
 
 	/**
 	 * Get environment variable.
 	 *
 	 * @param string $key Environment variable key.
-	 * @param string $fallback Fallback value (defaults to null).
+	 * @param string|null $fallback Fallback value (defaults to null).
 	 *
 	 * @return ?string Environment variable value or fallback.
 	 */
 	static public function get(string $key, ?string $fallback = null): ?string {
-		$key = static::$aliases[$key] ?? $key;
-		return static::$env[$key] ?? $_ENV[$key] ?? $_SERVER[$key] ?? $fallback;
+		$key = Env::$aliases[$key] ?? $key;
+		return Env::$env[$key] ?? $_ENV[$key] ?? $_SERVER[$key] ?? $fallback;
 	}
 
 	static public function isLoaded(): bool {
-		return static::$loaded;
+		return !empty(Env::$env);
 	}
 
 	/**
@@ -40,10 +34,9 @@ final class Env {
 	 * Can only be run once per session.
 	 */
 	static public function load(?string $dir = null): void {
-		if (!static::$loaded) {
+		if (!Env::isLoaded()) {
 			$env = \Dotenv\Dotenv::createImmutable($dir ?? $_SERVER['DOCUMENT_ROOT']);
-			static::$env = $env->safeLoad();
-			static::$loaded = true;
+			Env::$env = $env->safeLoad();
 		}
 	}
 
@@ -54,7 +47,7 @@ final class Env {
 	 * @param string $original Original key.
 	 */
 	static public function registerAlias(string $alias, string $original): void {
-		static::$aliases[$alias] = $original;
+		Env::$aliases[$alias] = $original;
 	}
 }
 

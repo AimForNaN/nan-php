@@ -3,7 +3,7 @@
 namespace NaN\App\Middleware;
 
 use NaN\App;
-use NaN\App\Middleware\Router\{Route, RoutePattern};
+use NaN\App\Middleware\Router\Route;
 use Psr\Http\Message\{
 	ResponseInterface as PsrResponseInterface,
 	ServerRequestInterface as PsrServerRequestInterface,
@@ -61,7 +61,7 @@ class Router implements \ArrayAccess, PsrMiddlewareInterface {
 		return (bool)$this->match($offset);
 	}
 
-	public function offsetGet(mixed $offset): mixed {
+	public function offsetGet(mixed $offset): ?Route {
 		return $this->match($offset);
 	}
 
@@ -76,7 +76,11 @@ class Router implements \ArrayAccess, PsrMiddlewareInterface {
 		return \array_filter(\explode('/', $path));
 	}
 
-	public function process(PsrServerRequestInterface $request, PsrRequestHandlerInterface $handler, ?App $app = null): PsrResponseInterface {
+	public function process(
+		PsrServerRequestInterface $request,
+		PsrRequestHandlerInterface $handler,
+		?App $app = null,
+	): PsrResponseInterface {
 		$route = $this->match($request->getUri()->getPath());
 
 		if (!$route) {
