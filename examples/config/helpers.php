@@ -1,10 +1,11 @@
 <?php
 
 use NaN\App;
-use NaN\App\Middleware\Router;
 use NaN\App\TemplateEngine;
-use NaN\Database\Drivers\SqlDriver;
-use NaN\Database\Query\Builders\SqlQueryBuilder;
+use NaN\Database\{
+	Drivers\SqlDriver,
+	Query\Builders\SqlQueryBuilder,
+};
 use NaN\Env;
 
 function app(): App {
@@ -12,8 +13,10 @@ function app(): App {
 
 	if (!$app) {
 		$services = include(__DIR__ . '/services.php');
+		$router = include(__DIR__ . '/routes.php');
 		$app = new App($services);
-		$app->use(router());
+
+		$app->use($router);
 	}
 
 	return $app;
@@ -32,7 +35,7 @@ function db(): SqlQueryBuilder {
 	return $db->createConnection();
 }
 
-function env(string $key, mixed $fallback = null): mixed {
+function env(string $key, mixed $fallback = null): ?string {
 	if (!Env::isLoaded()) {
 		Env::load();
 	}
@@ -40,18 +43,8 @@ function env(string $key, mixed $fallback = null): mixed {
 	return Env::get($key, $fallback);
 }
 
-function dbg(mixed $msg) {
+function dbg(mixed $msg): void {
 	NaN\Debug::log($msg);
-}
-
-function router(): Router {
-	static $router = null;
-
-	if (!$router) {
-		$router = include(__DIR__ . '/routes.php');
-	}
-
-	return $router;
 }
 
 function tpl(): TemplateEngine {
