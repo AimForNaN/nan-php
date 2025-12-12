@@ -83,3 +83,8 @@ $app->use($middleware);
 
 If the middleware container is incompatible, a warning will be triggered.
 You'll have to register your middleware through other means or stick to the NaN middleware container.
+
+##### Sharing data between middleware
+
+The main purpose for providing container support through the NaN App is for sharing data between middleware.
+Indeed, to use the NaN App's container for any other reason seems redundant.
