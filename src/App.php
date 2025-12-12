@@ -93,4 +93,16 @@ class App implements \ArrayAccess, PsrContainerInterface, PsrRequestHandlerInter
 			\trigger_error('Could not register middleware!', E_USER_WARNING);
 		}
 	}
+
+	public function withMiddleware(PsrRequestHandlerInterface $middleware): App {
+		$new = clone $this;
+		$new->middleware = $middleware;
+		return $new;
+	}
+
+	public function withServices(PsrContainerInterface $container): App {
+		$new = clone $this;
+		$new->services = $container;
+		return $new;
+	}
 }
