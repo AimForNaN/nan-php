@@ -8,6 +8,7 @@
 		}
 	},
     "require": {
+		"php": "^8.1",
 		"filp/whoops": "^2.17",
 		"guzzlehttp/psr7": "^2.6",
 		"league/plates": "^3.5",

@@ -7,7 +7,6 @@ A PHP micro-framework focused on simplicity and performance.
 #### Requirements
 
  - PHP 8.1 or greater.
- - PDO extension.
 
 #### Composer
 
